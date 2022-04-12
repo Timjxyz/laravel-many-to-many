@@ -11,7 +11,13 @@
                 <div><strong>Slug: </strong> {{$post->slug}}</div>
                 <div><strong>Categoria: </strong> {{isset($post->category)?$post->category->name:'Altro'}}</div>
 
-                <a href="{{url()->previous()}}" class="btn btn-primary">Torna alla lista dei prodotti</a>
+                <div>
+                    @foreach ($post->tags as $tag)
+                        <span class="badge badge-primary">{{$tag->name}}</span>
+                    @endforeach
+                </div>
+
+                <a href="{{url()->previous()}}" class="btn btn-primary">Torna in dietro</a>
             </div>
         </div>
     </div>

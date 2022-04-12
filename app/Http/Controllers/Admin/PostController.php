@@ -7,6 +7,7 @@ use App\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Category;
+use App\Tag;
 class PostController extends Controller
 {
     /**
@@ -29,7 +30,10 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('admin.post.create', compact('categories'));
+        $tags = Tag::all();
+
+        return view('admin.post.create', compact('categories', 'tags'));
+
     }
 
     /**
@@ -46,6 +50,7 @@ class PostController extends Controller
                 'title'=>'required|min:5',
                 'content'=>'required|min:10',
                 'category_id' => 'nullable|exists:categories,id',
+                'tags' => 'nullable|exists:tags,id',
             ]
         );
 
@@ -65,6 +70,8 @@ class PostController extends Controller
         $post = new Post();
         $post->fill($data);
         $post->save();
+        $post->tags()->sync($data['tags']);
+
 
         return redirect()->route('admin.posts.index');
        
@@ -90,7 +97,9 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         $categories = Category::all();
-        return view('admin.post.edit', compact('post', 'categories',));
+        $tags = Tag::all();
+
+        return view('admin.post.edit', compact('post', 'categories', 'tags'));
     }
 
     /**
@@ -122,8 +131,10 @@ class PostController extends Controller
             $data['slug'] = $slug;
         }
 
+        
         $post->update($data);
         $post->save();
+        $post->tags()->sync($data['tags']);
         return redirect()->route('admin.posts.index');
     }
 
